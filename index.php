@@ -2,20 +2,24 @@
     require("connexion.php");
     if( $_SERVER['REQUEST_METHOD'] === "POST")
     {
-        if( !empty($_POST["nom_produit"]) && !empty($_POST["categorie_produit"]) && !empty( $_POST["quantite_produit"] ) && !empty( $_POST["prix_produit"]) && !empty( $_POST["description_produit"]))
+        
+        if( !empty($_POST["nom_produit"]) && !empty($_POST["categorie_produit"]) && !empty( $_POST["quantite_produit"] ) && !empty( $_POST["prix_produit"]) && !empty( $_POST["description_produit"] && $_FILES["image"]))
         {
             $nom = $_POST["nom_produit"];
             $categorie = $_POST["categorie_produit"];
             $quantite = $_POST["quantite_produit"] ;
             $prix =  $_POST["prix_produit"];
             $description = $_POST["description_produit"];
+            $ext = pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION);
+            $image_path = $_POST["nom_produit"].".".$ext ;
+            move_uploaded_file($_FILES["image"]["tmp_name"], "./upload/" .$image_path );
 
-            $sql = "insert into product (product_name, product_categorie, product_description, product_quantity, product_price ) values ('$nom', $categorie, '$description', $quantite, $prix)";
+            $sql = "insert into product (product_name, product_categorie, product_description, product_quantity, product_price, image_product ) values ('$nom', $categorie, '$description', $quantite, $prix,'$image_path'  )";
             if($connexion->query($sql))
             {
                 echo "Success !";
             }
-           
+            
         }
         else
             echo "<p>Veuillez remplir tous les champs</p>";
@@ -77,7 +81,10 @@
                     <tbody>
                         <?php foreach ($produits->fetchAll(PDO::FETCH_OBJ) as $produit): ?>
                         <tr >
-                            <td><?=$produit->product_name?></td>
+                            <td>
+                                <img src="upload/<?=$produit->image_product ?>" alt="image du produit">
+                                <?=$produit->product_name?>
+                            </td>
                             <td><?=$produit->product_categorie?></td>
                             <td><?=$produit->product_description?></td>
                             <td><?=$produit->product_quantity?></td>
@@ -96,7 +103,7 @@
         </div>
 
         <div class="popup-ajout">
-            <form action="#" method="post" class="form-add">
+            <form action="#" method="post" class="form-add" enctype="multipart/form-data">
                 <input type="text" name="nom_produit" id="" placeholder="nom du produit" value="">
                 <input type="number" name="quantite_produit" id="" placeholder="Quantité du produit">
                 <input type="number" name="prix_produit" id="" placeholder="prix du produit">
@@ -107,7 +114,7 @@
                 </select>
                 <textarea name="description_produit" id=""placeholder="Description du produit"></textarea>
                 <label for="img_produit">Definir l'image du produits</label>
-                <input type="file" name="" id="img_produit" class="choose">
+                <input type="file" name="image" id="img_produit" class="choose">
                 <button type="submit" class="btn-sub">Ajouter</button>
                 <button type="reset" class="btn">Effacer</button>
             </form>

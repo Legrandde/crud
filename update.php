@@ -6,6 +6,7 @@ $id_product = $_GET['id'];
     {
 
         
+        
         if( !empty($_POST["nom_produit"]) && !empty($_POST["categorie_produit"]) && !empty( $_POST["quantite_produit"] ) && !empty( $_POST["prix_produit"]))
         {
             echo "<p>Produit modifier avec success<p/><a href=\"index.php\">Revenir en arrierre<a/>";

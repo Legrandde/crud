@@ -68,3 +68,9 @@ label{
     box-shadow:  0 0 6px #ddd;
     padding: 10px;
 }
+
+img{
+    width: 70px;
+    object-fit: contain;
+}
+
